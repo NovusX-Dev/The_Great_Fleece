@@ -7,6 +7,10 @@ public class Player : MonoBehaviour
 {
     [SerializeField] GameObject _cursorMarker;
     [SerializeField] LayerMask _walkableNavMesh;
+    [SerializeField] Animator _myAnim;
+
+    private bool _isWalking = false;
+    private Vector3 _targetDestination;
 
     NavMeshAgent _navMesh;
 
@@ -28,14 +32,19 @@ public class Player : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000, _navMesh.areaMask))
             {
-                _navMesh.SetDestination(hit.point);
-                //Instantiate(_cursorMarker, hit.point, Quaternion.identity);
+                _targetDestination = hit.point;
+                _navMesh.SetDestination(_targetDestination);
+                _isWalking = true;
             }
-            else
-            {
-                Debug.Log("Did not hit anything");
-            }
-
         }
+
+        var distance = Vector3.Distance(transform.position, _targetDestination);
+        if (distance < 1.0f)
+        {
+            _isWalking =false;
+        }
+
+        _myAnim.SetBool("walk", _isWalking);
+        Debug.Log("Destination is " + _targetDestination);
     }
 }
