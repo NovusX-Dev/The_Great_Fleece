@@ -5,11 +5,14 @@ using UnityEngine.AI;
 
 public class GuardAI : MonoBehaviour
 {
-    [SerializeField] private List<Transform> _waypoints; 
+    [SerializeField] private List<Transform> _waypoints;
+
 
     private int _currentTarget = 0;
     private bool _reverse;
     private bool _targetReached;
+    private bool _isAlert;
+    private Vector3 _alertedPosition;
 
     NavMeshAgent _agent;
     Animator _anim;
@@ -23,30 +26,45 @@ public class GuardAI : MonoBehaviour
 
     void Update()
     {
-        if (_waypoints.Count > 0 && _waypoints[_currentTarget] != null)
+        if (!_isAlert)
         {
-            _agent.SetDestination(_waypoints[_currentTarget].position);
-            var distance = Vector3.Distance(transform.position, _waypoints[_currentTarget].position);
-
-            if (distance < 1f && (_currentTarget == 0 || _currentTarget == _waypoints.Count - 1))
+            if (_waypoints.Count > 0 && _waypoints[_currentTarget] != null)
             {
-                _anim.SetBool("walk", false);
-            }
-            else
-            {
-                _anim.SetBool("walk", true);
-            }
+                _agent.SetDestination(_waypoints[_currentTarget].position);
+                var distance = Vector3.Distance(transform.position, _waypoints[_currentTarget].position);
 
-            if (distance < 1.0f && !_targetReached)
-            {
-                if (_waypoints.Count < 2)
-                    return;
+                if (distance < 4f && (_currentTarget == 0 || _currentTarget == _waypoints.Count - 1))
+                {
+                    _anim.SetBool("walk", false);
+                }
+                else
+                {
+                    _anim.SetBool("walk", true);
+                }
 
-                _targetReached = true;
-                StartCoroutine(WaitBeforeMoving());
+                if (distance < 4.0f && !_targetReached)
+                {
+                    if (_waypoints.Count < 2)
+                        return;
+
+                    _targetReached = true;
+                    StartCoroutine(WaitBeforeMoving());
+                }
             }
         }
+        else if (_isAlert)
+        {
+            StartCoroutine(AlertedAIRoutine());
+        }
     }
+
+    public void AlertAI(Vector3 alertedPosition)
+    {
+        _isAlert = true;
+        this._alertedPosition = alertedPosition;
+        
+    }
+
 
     IEnumerator WaitBeforeMoving()
     {
@@ -80,5 +98,20 @@ public class GuardAI : MonoBehaviour
         }
 
         _targetReached = false;
+    }
+
+    IEnumerator AlertedAIRoutine()
+    {
+        yield return new WaitForSeconds(Random.Range(0.1f, 0.9f));
+        _anim.SetBool("walk", true);
+        _agent.SetDestination(_alertedPosition);
+
+        var distance = Vector3.Distance(transform.position, _alertedPosition);
+        if (distance < Random.Range(0.1f, 4f))
+        {
+            _anim.SetBool("walk", false);
+            yield return new WaitForSeconds(Random.Range(2f, 3f));
+            _isAlert = false;
+        }
     }
 }
