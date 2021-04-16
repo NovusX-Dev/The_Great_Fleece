@@ -45,6 +45,5 @@ public class Player : MonoBehaviour
         }
 
         _myAnim.SetBool("walk", _isWalking);
-        Debug.Log("Destination is " + _targetDestination);
     }
 }
