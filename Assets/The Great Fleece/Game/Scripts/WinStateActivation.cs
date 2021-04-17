@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VoiceOverTrigger : MonoBehaviour
+public class WinStateActivation : MonoBehaviour
 {
-    [SerializeField] AudioClip _VOClip = null;
+    [SerializeField] GameObject _winScene;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            if (_VOClip != null)
+            if (GameManager.Instance.HasCard)
             {
-                AudioManager.Instance.PlayVoiceOver(_VOClip);
+                _winScene.SetActive(true);
             }
         }
     }
