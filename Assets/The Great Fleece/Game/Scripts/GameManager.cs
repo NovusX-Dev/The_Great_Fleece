@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private PlayableDirector _currentDirector;
     private bool _sceneSkipped = true;
+    private float _timeToSkipTo;
 
     public bool HasCard { get; set; }
 
@@ -36,7 +37,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && !_sceneSkipped)
         {
-            _currentDirector.time = 60.0f;
+            _currentDirector.time = _timeToSkipTo;
             _sceneSkipped = true;
         }
     }
@@ -45,6 +46,11 @@ public class GameManager : MonoBehaviour
     {
         _sceneSkipped = false;
         _currentDirector = director;
+    }
+
+    public void GetSkipTime(float skipTime)
+    {
+        _timeToSkipTo = skipTime;
     }
 
 }
