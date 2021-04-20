@@ -29,6 +29,5 @@ public class LoadLeveLAsync : MonoBehaviour
             }
             yield return null;
         }
-        
     }
 }

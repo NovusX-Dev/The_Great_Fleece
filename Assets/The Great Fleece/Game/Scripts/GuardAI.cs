@@ -6,7 +6,8 @@ using UnityEngine.AI;
 public class GuardAI : MonoBehaviour
 {
     [SerializeField] private List<Transform> _waypoints;
-
+    [SerializeField] AudioClip _footStep;
+    [SerializeField] AudioSource _audioSource;
 
     private int _currentTarget = 0;
     private bool _reverse;
@@ -65,6 +66,11 @@ public class GuardAI : MonoBehaviour
         
     }
 
+    public void PlayFootStepSound()
+    {
+        _audioSource.clip = _footStep;
+        _audioSource.Play();
+    }
 
     IEnumerator WaitBeforeMoving()
     {

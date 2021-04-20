@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.LogError("Game Manager is NULLLLL!");
+                Debug.LogError("Game Manager is NULL!");
             }
 
             return _instance;
